@@ -1,5 +1,1 @@
-export default {
-  buildCommand: 'npm run build',
-  outputDirectory: 'dist',
-  framework: 'astro',
-};
+{"buildCommand":null,"outputDirectory":"."}

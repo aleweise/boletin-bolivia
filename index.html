@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📰 Boletín Bolivia</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+    .header {
+      background: linear-gradient(135deg, #1e40af, #7c3aed);
+      padding: 2rem 1rem;
+      text-align: center;
+      border-bottom: 3px solid #f59e0b;
+    }
+    .header h1 { font-size: 1.8rem; margin-bottom: 0.3rem; }
+    .header .subtitle { color: #93c5fd; font-size: 0.9rem; }
+    .header .flag { font-size: 2rem; }
+    .container { max-width: 600px; margin: 0 auto; padding: 1rem; }
+    .card {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      border-left: 4px solid #3b82f6;
+    }
+    .card.dollar { border-left-color: #f59e0b; }
+    .card.country { border-left-color: #ef4444; }
+    .card.economy { border-left-color: #10b981; }
+    .card.world { border-left-color: #8b5cf6; }
+    .card.sport { border-left-color: #06b6d4; }
+    .card h2 {
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card p, .card li {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+    .card ul { padding-left: 1rem; }
+    .card ul li { margin-bottom: 0.3rem; }
+    .price { font-size: 1.3rem; font-weight: bold; color: #fbbf24; }
+    .trend-up { color: #10b981; }
+    .trend-down { color: #ef4444; }
+    .trend-stable { color: #94a3b8; }
+    .footer {
+      text-align: center;
+      padding: 1.5rem;
+      color: #64748b;
+      font-size: 0.8rem;
+    }
+    .date-nav {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .date-nav a {
+      background: #334155;
+      color: #94a3b8;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+    .date-nav a:hover { background: #475569; color: white; }
+    .date-nav a.active { background: #3b82f6; color: white; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="flag">🇧🇴</div>
+    <h1>📰 Boletín Bolivia</h1>
+    <div class="subtitle">por Ale para Mamá ❤️</div>
+  </div>
+  <div class="container">
+    <div class="date-nav" id="dates"></div>
+    <div id="content">
+      <div class="card">
+        <h2>⏳ Cargando boletín...</h2>
+        <p>El primer boletín arrive mañana a las 8:00 AM.</p>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    Generado con ❤️ por Ale · Datos de Binance P2P, Reuters, Infobae
+  </div>
+  <script>
+    // Load boletines list
+    fetch('/api/dates.json')
+      .then(r => r.json())
+      .then(dates => {
+        const nav = document.getElementById('dates');
+        dates.reverse().forEach(d => {
+          const a = document.createElement('a');
+          a.href = '#' + d;
+          a.textContent = d;
+          a.onclick = (e) => { e.preventDefault(); loadBoletin(d); };
+          nav.appendChild(a);
+        });
+        if (dates.length) loadBoletin(dates[dates.length - 1]);
+      })
+      .catch(() => {});
+
+    function loadBoletin(date) {
+      document.querySelectorAll('.date-nav a').forEach(a => {
+        a.classList.toggle('active', a.textContent === date);
+      });
+      fetch(`/boletines/${date}.html`)
+        .then(r => r.text())
+        .then(html => { document.getElementById('content').innerHTML = html; })
+        .catch(() => {
+          document.getElementById('content').innerHTML = '<div class="card"><h2>❌ Boletín no encontrado</h2></div>';
+        });
+    }
+  </script>
+</body>
+</html>

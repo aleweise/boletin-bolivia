@@ -47,7 +47,7 @@
   </div>
   <div class="footer">Generado con ❤️ por Ale · Datos de Binance P2P, Reuters, Infobae</div>
   <script>
-    fetch('./api/dates.json').then(r=>r.json()).then(dates=>{
+    fetch('./data/dates.json').then(r=>r.json()).then(dates=>{
       const nav=document.getElementById('dates');
       dates.reverse().forEach(d=>{
         const a=document.createElement('a');

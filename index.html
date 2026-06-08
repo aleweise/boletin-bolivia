@@ -3,73 +3,84 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📰 Boletín Bolivia — Noticias de Bolivia</title>
-  <meta name="description" content="Boletín diario de Bolivia: dólar, crisis política, economía y geopolítica.">
+  <title>📰 Boletín Bolivia — Lo más importante de Bolivia cada mañana</title>
+  <meta name="description" content="Boletín diario de Bolivia: dólar, crisis política, economía y geopolítica. Actualizado cada mañana.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <!-- HERO -->
   <header class="hero">
-    <div class="hero-flag">🇧🇴</div>
+    <span class="hero-flag">🇧🇴</span>
     <h1 class="hero-title">Boletín Bolivia</h1>
-    <p class="hero-subtitle">Lo más importante de Bolivia cada mañana: dólar, crisis, economía y geopolítica.</p>
-    <span class="hero-date" id="heroDate">Cargando...</span>
+    <p class="hero-subtitle">Lo más importante de Bolivia cada mañana: dólar, crisis política, economía y geopolítica.</p>
+    <div class="hero-meta">
+      <span class="hero-badge">📋 Actualizado diariamente</span>
+      <span class="hero-date" id="heroDate">Cargando...</span>
+    </div>
   </header>
 
   <!-- MAIN CONTENT -->
   <main class="container">
 
     <div class="section-header">
-      <h2>📋 Últimos Boletines</h2>
+      <h2>📰 Últimos Boletines</h2>
       <div class="line"></div>
     </div>
 
     <div class="card-grid" id="bulletinGrid">
-      <!-- Cards se cargan dinámicamente -->
+      <!-- Cards injected by JS -->
     </div>
 
   </main>
 
   <footer class="footer">
-    <p>Boletín Bolivia — Hecho con ❤️ por Ale para Mamá</p>
+    Boletín Bolivia — Hecho con ❤️ por <span>Ale</span> para Mamá
   </footer>
 
   <script>
-    // Cargar fechas de boletines
     async function loadBulletins() {
       try {
         const res = await fetch('api/dates.json');
         const dates = await res.json();
         const grid = document.getElementById('bulletinGrid');
 
-        // Mostrar fecha de hoy en hero
-        const today = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        // Hero date
+        const today = new Date().toLocaleDateString('es-ES', {
+          weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+        });
         document.getElementById('heroDate').textContent = today.charAt(0).toUpperCase() + today.slice(1);
 
-        // Ordenar descending
+        // Sort descending
         const sorted = [...dates].sort((a, b) => b.date.localeCompare(a.date));
 
         sorted.forEach(item => {
           const d = new Date(item.date + 'T12:00:00');
-          const dateStr = d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+          const dateStr = d.toLocaleDateString('es-ES', {
+            weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
+          });
+          const tags = item.tags || [];
+          const tagHTML = tags.map(t => `<span class="tag tag-${t}">${t}</span>`).join('');
+
           const card = document.createElement('a');
-          card.href = `boletines/${item.date}.html`;
+          card.href = `boletines/${item.date}`;
           card.className = 'card';
           card.innerHTML = `
             <span class="card-date">${dateStr}</span>
-            <span class="card-title">${item.title || 'Boletín del ' + dateStr}</span>
-            <span class="card-preview">${item.preview || 'Ver contenido completo...'}</span>
-            <div class="card-tags">
-              ${item.tags ? item.tags.map(t => `<span class="tag tag-${t}">${t}</span>`).join('') : ''}
+            <span class="card-title">${item.title}</span>
+            <span class="card-preview">${item.preview}</span>
+            <div class="card-footer">
+              <div class="card-tags">${tagHTML}</div>
+              <span class="card-arrow">→</span>
             </div>
           `;
           grid.appendChild(card);
         });
       } catch (e) {
-        document.getElementById('bulletinGrid').innerHTML = '<p style="color:var(--text-muted)">No se pudieron cargar los boletines.</p>';
+        document.getElementById('bulletinGrid').innerHTML =
+          '<p style="color:var(--text-muted);text-align:center;grid-column:1/-1">No se pudieron cargar los boletines.</p>';
       }
     }
     loadBulletins();

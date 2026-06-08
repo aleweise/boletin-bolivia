@@ -1,0 +1,32 @@
+[
+  {
+    "date": "2026-06-08",
+    "title": "Boletín 8 de Junio — Crisis en segundo mes",
+    "preview": "Dólar USDT/USDC en BS, 37+ días de bloqueos, pérdidas de $1.600M, inflación proyectada 15-20%.",
+    "tags": ["crisis", "economy", "politics"]
+  },
+  {
+    "date": "2026-06-07",
+    "title": "Boletín 7 de Junio — La Paz aislada",
+    "preview": "Bloqueos en La Paz y El Alto, protestas en Potosí y Cochabamba, crisis política en evolución.",
+    "tags": ["crisis", "politics"]
+  },
+  {
+    "date": "2026-06-06",
+    "title": "Boletín 6 de Junio — Economía bajo presión",
+    "preview": "Tipo de cambio paralelo en aumento, inflación acelerada, análisis del impacto de los bloqueos.",
+    "tags": ["economy", "world"]
+  },
+  {
+    "date": "2026-06-05",
+    "title": "Boletín 5 de Junio — Semana de protestas",
+    "preview": "Protestas masivas en varias ciudades, respuesta del gobierno, situación de la selección Boliviana.",
+    "tags": ["crisis", "sport"]
+  },
+  {
+    "date": "2026-06-04",
+    "title": "Boletín 4 de Junio — Inicio de la crisis",
+    "preview": "Primer día de bloqueos, contexto de la crisis política Boliviana.",
+    "tags": ["crisis", "politics"]
+  }
+]

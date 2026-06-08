@@ -3,66 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>📰 Boletín Bolivia</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
-    .header { background: linear-gradient(135deg, #1e40af, #7c3aed); padding: 2rem 1rem; text-align: center; border-bottom: 3px solid #f59e0b; }
-    .header h1 { font-size: 1.8rem; margin-bottom: 0.3rem; }
-    .header .subtitle { color: #93c5fd; font-size: 0.9rem; }
-    .header .flag { font-size: 2rem; }
-    .container { max-width: 600px; margin: 0 auto; padding: 1rem; }
-    .card { background: #1e293b; border-radius: 12px; padding: 1.2rem; margin-bottom: 1rem; border-left: 4px solid #3b82f6; }
-    .card.dollar { border-left-color: #f59e0b; }
-    .card.country { border-left-color: #ef4444; }
-    .card.economy { border-left-color: #10b981; }
-    .card.world { border-left-color: #8b5cf6; }
-    .card.sport { border-left-color: #06b6d4; }
-    .card h2 { font-size: 1.1rem; margin-bottom: 0.8rem; display: flex; align-items: center; gap: 0.5rem; }
-    .card p, .card li { font-size: 0.95rem; line-height: 1.6; color: #cbd5e1; }
-    .card ul { padding-left: 1rem; }
-    .price { font-size: 1.3rem; font-weight: bold; color: #fbbf24; }
-    .footer { text-align: center; padding: 1.5rem; color: #64748b; font-size: 0.8rem; }
-    .date-nav { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
-    .date-nav a { background: #334155; color: #94a3b8; padding: 0.3rem 0.8rem; border-radius: 20px; text-decoration: none; font-size: 0.85rem; }
-    .date-nav a:hover { background: #475569; color: white; }
-    .date-nav a.active { background: #3b82f6; color: white; }
-  </style>
+  <title>📰 Boletín Bolivia — Noticias de Bolivia</title>
+  <meta name="description" content="Boletín diario de Bolivia: dólar, crisis política, economía y geopolítica.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="header">
-    <div class="flag">🇧🇴</div>
-    <h1>📰 Boletín Bolivia</h1>
-    <div class="subtitle">por Ale para Mamá ❤️</div>
-  </div>
-  <div class="container">
-    <div class="date-nav" id="dates"></div>
-    <div id="content">
-      <div class="card">
-        <h2>⏳ Primer boletín en camino</h2>
-        <p>El boletín diario arrive cada mañana a las 8:00 AM (hora Bolivia).</p>
-        <p style="margin-top:0.5rem">Incluye: dólar, situación del país, economía y geopolítica.</p>
-      </div>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-flag">🇧🇴</div>
+    <h1 class="hero-title">Boletín Bolivia</h1>
+    <p class="hero-subtitle">Lo más importante de Bolivia cada mañana: dólar, crisis, economía y geopolítica.</p>
+    <span class="hero-date" id="heroDate">Cargando...</span>
+  </header>
+
+  <!-- MAIN CONTENT -->
+  <main class="container">
+
+    <div class="section-header">
+      <h2>📋 Últimos Boletines</h2>
+      <div class="line"></div>
     </div>
-  </div>
-  <div class="footer">Generado con ❤️ por Ale · Datos de Binance P2P, Reuters, Infobae</div>
+
+    <div class="card-grid" id="bulletinGrid">
+      <!-- Cards se cargan dinámicamente -->
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <p>Boletín Bolivia — Hecho con ❤️ por Ale para Mamá</p>
+  </footer>
+
   <script>
-    fetch('./data/dates.json').then(r=>r.json()).then(dates=>{
-      const nav=document.getElementById('dates');
-      dates.reverse().forEach(d=>{
-        const a=document.createElement('a');
-        a.href='#'+d; a.textContent=d;
-        a.onclick=e=>{e.preventDefault();loadBoletin(d)};
-        nav.appendChild(a);
-      });
-      if(dates.length) loadBoletin(dates[0]);
-    }).catch(()=>{});
-    function loadBoletin(date){
-      document.querySelectorAll('.date-nav a').forEach(a=>a.classList.toggle('active',a.textContent===date));
-      fetch('./boletines/'+date+'.html').then(r=>r.text()).then(html=>{document.getElementById('content').innerHTML=html}).catch(()=>{});
+    // Cargar fechas de boletines
+    async function loadBulletins() {
+      try {
+        const res = await fetch('api/dates.json');
+        const dates = await res.json();
+        const grid = document.getElementById('bulletinGrid');
+
+        // Mostrar fecha de hoy en hero
+        const today = new Date().toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('heroDate').textContent = today.charAt(0).toUpperCase() + today.slice(1);
+
+        // Ordenar descending
+        const sorted = [...dates].sort((a, b) => b.date.localeCompare(a.date));
+
+        sorted.forEach(item => {
+          const d = new Date(item.date + 'T12:00:00');
+          const dateStr = d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+          const card = document.createElement('a');
+          card.href = `boletines/${item.date}.html`;
+          card.className = 'card';
+          card.innerHTML = `
+            <span class="card-date">${dateStr}</span>
+            <span class="card-title">${item.title || 'Boletín del ' + dateStr}</span>
+            <span class="card-preview">${item.preview || 'Ver contenido completo...'}</span>
+            <div class="card-tags">
+              ${item.tags ? item.tags.map(t => `<span class="tag tag-${t}">${t}</span>`).join('') : ''}
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      } catch (e) {
+        document.getElementById('bulletinGrid').innerHTML = '<p style="color:var(--text-muted)">No se pudieron cargar los boletines.</p>';
+      }
     }
+    loadBulletins();
   </script>
+
 </body>
 </html>
-<!-- redeploy Fri Jun  5 08:17:11 -04 2026 -->
-<!-- redeploy Fri Jun  5 08:17:16 -04 2026 -->
